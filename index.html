@@ -22,13 +22,14 @@ p{margin:8px 0 14px;font-size:18px}small{display:block;margin-top:12px;opacity:.
 .panel button{display:block;width:100%;margin:10px 0 0;padding:14px;border-radius:16px;border:0;font-size:20px;font-weight:bold;color:#fff;background:#4b3a8a;cursor:pointer;box-shadow:0 5px 0 #2a1f5a}
 .panel button.big{background:linear-gradient(#ff9f1c,#e63946);box-shadow:0 5px 0 #8f1d2b;font-size:26px;padding:18px}
 .panel button:active{transform:translateY(3px)}
-#jump{display:none;position:fixed;right:calc(env(safe-area-inset-right,0px) + 22px);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);width:120px;height:120px;border-radius:50%;border:5px solid #fff;background:radial-gradient(circle at 35% 30%,#ffb347,#e63946);color:#fff;font-size:20px;font-weight:bold;box-shadow:0 8px 0 #8f1d2b;flex-direction:column;align-items:center;justify-content:center;opacity:.92}
-#jump:active{transform:translateY(4px);box-shadow:0 4px 0 #8f1d2b}
+#jump{display:none;position:fixed;right:calc(env(safe-area-inset-right,0px) + var(--jm,12px));bottom:calc(env(safe-area-inset-bottom,0px) + var(--jm,12px));width:var(--jb,84px);height:var(--jb,84px);padding:0;border-radius:50%;border:4px solid #fff;background:radial-gradient(circle at 35% 30%,#ffb347,#e63946);color:#fff;font-size:15px;font-weight:bold;box-shadow:0 5px 0 #8f1d2b;flex-direction:column;align-items:center;justify-content:center;opacity:.9}
+#jump:active{transform:translateY(3px);box-shadow:0 2px 0 #8f1d2b}
+#sa{position:fixed;left:0;bottom:0;width:0;height:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none}
 @media (pointer:coarse){body[data-st=playing] #jump{display:flex}}
 </style></head><body data-st="menu">
 <canvas id="c"></canvas>
 <div id="hud"><button id="mb" aria-label="Mute">🔊</button><button id="pb" aria-label="Pause">⏸</button></div>
-<button id="jump" aria-label="Jump"><span style="font-size:36px">⬆</span>JUMP</button>
+<button id="jump" aria-label="Jump"><span style="font-size:26px;line-height:1">⬆</span>JUMP</button><div id="sa"></div>
 <div id="ov"></div>
 <script>
 (()=>{
@@ -39,7 +40,7 @@ const N={h:0,vy:0,onG:true,t:0},ls=[];
 try{best=+localStorage.getItem('ninjarush.best')||0;mute=localStorage.getItem('ninjarush.mute')==='1'}catch(e){}
 const on=(t,f,tg=window,o)=>{tg.addEventListener(t,f,o);ls.push([tg,t,f,o])};
 const nx=()=>Math.min(150,W*.22),score=()=>Math.floor(dist/10)+coins*10;
-function resize(){const d=Math.min(devicePixelRatio||1,2);cv.width=innerWidth*d;cv.height=innerHeight*d;H=innerWidth<innerHeight?600:400;S=innerHeight/H;W=innerWidth/S;G=H-80;ctx.setTransform(d*S,0,0,d*S,0,0)}
+function resize(){const d=Math.min(devicePixelRatio||1,2);cv.width=innerWidth*d;cv.height=innerHeight*d;H=innerWidth<innerHeight?600:400;S=innerHeight/H;W=innerWidth/S;const co=matchMedia("(pointer:coarse)").matches,ls_=innerWidth>innerHeight&&innerHeight<=520,jb=ls_?68:84,jm=ls_?10:12;document.documentElement.style.setProperty("--jb",jb+"px");document.documentElement.style.setProperty("--jm",jm+"px");const rs=co?(jb+jm+$("sa").offsetHeight+8)/S:0;G=H-Math.min(110,Math.max(80,rs));ctx.setTransform(d*S,0,0,d*S,0,0)}
 function setSt(s){st=s;document.body.dataset.st=s;PB.textContent=s==='paused'?'▶':'⏸'}
 /* audio */
 function initAudio(){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}}
